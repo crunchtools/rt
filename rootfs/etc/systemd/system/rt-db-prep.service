@@ -1,0 +1,12 @@
+[Unit]
+Description=Initialize MariaDB data directory
+Before=mariadb.service
+ConditionPathExists=!/var/lib/mysql/mysql
+
+[Service]
+Type=oneshot
+ExecStart=/usr/local/bin/rt-db-prep.sh
+RemainAfterExit=yes
+
+[Install]
+WantedBy=multi-user.target

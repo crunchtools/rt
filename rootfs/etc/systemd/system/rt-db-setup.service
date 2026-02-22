@@ -1,0 +1,13 @@
+[Unit]
+Description=Initialize RT database schema
+After=mariadb.service
+Before=httpd.service
+Requires=mariadb.service
+
+[Service]
+Type=oneshot
+ExecStart=/usr/local/bin/rt-db-setup.sh
+RemainAfterExit=yes
+
+[Install]
+WantedBy=multi-user.target

@@ -1,0 +1,12 @@
+use utf8;
+Set( $DatabaseHost, 'localhost' );
+Set( $DatabaseName, 'rt4' );
+Set( $DatabasePassword, '' );
+Set( $DatabasePort, '' );
+Set( $DatabaseType, 'mysql' );
+Set( $DatabaseUser, 'root' );
+Set( $Organization, 'example.com' );
+Set( $WebDomain, 'localhost' );
+Set( $WebPort, '82' );
+Set( $rtname, 'RT' );
+1;
