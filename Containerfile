@@ -19,7 +19,7 @@ RUN subscription-manager unregister 2>/dev/null || true
 # Install CPAN dependencies (THE SLOW LAYER — cached by Docker)
 RUN cpan -i CPAN
 RUN cpan -i -f GnuPG::Interface
-RUN cpan -i DBIx::SearchBuilder \
+RUN cpan -i -f DBIx::SearchBuilder \
     ExtUtils::Command::MM \
     Text::WikiFormat \
     Devel::StackTrace \
