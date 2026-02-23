@@ -5,7 +5,7 @@ FROM quay.io/crunchtools/ubi10-httpd-perl AS builder
 
 RUN --mount=type=secret,id=activation_key \
     --mount=type=secret,id=org_id \
-    if [ -f /run/secrets/activation_key ] && [ -f /run/secrets/org_id ]; then \
+    if [ -s /run/secrets/activation_key ] && [ -s /run/secrets/org_id ]; then \
         subscription-manager register \
             --activationkey="$(cat /run/secrets/activation_key)" \
             --org="$(cat /run/secrets/org_id)" && \
