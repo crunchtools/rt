@@ -82,6 +82,8 @@ run_static_tests() {
         run_in rpm -q mariadb-server
     check "postfix is installed" \
         run_in rpm -q postfix
+    check "w3m is installed" \
+        run_in rpm -q w3m
     check "perl is installed" \
         run_in rpm -q perl
 
@@ -135,6 +137,8 @@ run_static_tests() {
     echo "--- Apache Config ---"
     check "Apache listens on port 82" \
         'run_in grep -q "Listen 82" /etc/httpd/conf.d/rt.conf'
+    check "Apache port 80 is disabled" \
+        'run_in grep -q "^#Listen 80" /etc/httpd/conf/httpd.conf'
     check "ScriptAlias points to RT FCGI" \
         'run_in grep -q "rt-server.fcgi" /etc/httpd/conf.d/rt.conf'
 
