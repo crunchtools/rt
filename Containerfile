@@ -147,7 +147,7 @@ RUN cpanm --notest \
 
 # Download and install RT 6.0.2
 RUN curl -fsSL https://download.bestpractical.com/pub/rt/release/rt-6.0.2.tar.gz | tar xz -C /root
-RUN cd /root/rt-6.0.2 && ./configure --with-db-type=MariaDB
+RUN cd /root/rt-6.0.2 && ./configure --with-db-type=mysql
 RUN cd /root/rt-6.0.2 && make testdeps && make install
 
 # =============================================================================

@@ -3,7 +3,7 @@ Set( $DatabaseHost, 'localhost' );
 Set( $DatabaseName, 'rt4' );
 Set( $DatabasePassword, '' );
 Set( $DatabasePort, '' );
-Set( $DatabaseType, 'MariaDB' );
+Set( $DatabaseType, 'mysql' );
 Set( $DatabaseUser, 'root' );
 Set( $Organization, 'example.com' );
 Set( $WebDomain, 'localhost' );

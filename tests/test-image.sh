@@ -91,8 +91,8 @@ run_static_tests() {
         run_in test -f /opt/rt6/etc/RT_SiteConfig.pm
     check "RT Apache config exists" \
         run_in test -f /etc/httpd/conf.d/rt.conf
-    check "RT_SiteConfig sets database type to MariaDB" \
-        'run_in grep -q "MariaDB" /opt/rt6/etc/RT_SiteConfig.pm'
+    check "RT_SiteConfig sets database type to mysql" \
+        'run_in grep -q "mysql" /opt/rt6/etc/RT_SiteConfig.pm'
 
     echo ""
     echo "--- Init Scripts ---"
