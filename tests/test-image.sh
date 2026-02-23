@@ -1,5 +1,5 @@
 #!/bin/bash
-# Test suite for RT 4.4.4 all-in-one container image
+# Test suite for RT 6.0.2 all-in-one container image
 # Usage: ./tests/test-image.sh [--static|--runtime|--all] <image:tag>
 set -euo pipefail
 
@@ -62,15 +62,15 @@ run_static_tests() {
     echo ""
     echo "--- RT Installation ---"
     check "RT base directory exists" \
-        run_in test -d /opt/rt4
+        run_in test -d /opt/rt6
     check "RT FCGI script exists" \
-        run_in test -f /opt/rt4/sbin/rt-server.fcgi
+        run_in test -f /opt/rt6/sbin/rt-server.fcgi
     check "RT setup-database tool exists" \
-        run_in test -f /opt/rt4/sbin/rt-setup-database
+        run_in test -f /opt/rt6/sbin/rt-setup-database
     check "RT lib directory exists" \
-        run_in test -d /opt/rt4/lib
+        run_in test -d /opt/rt6/lib
     check "RT web assets exist" \
-        run_in test -d /opt/rt4/share/html
+        run_in test -d /opt/rt6/share/html
 
     echo ""
     echo "--- Package Installation ---"
@@ -88,11 +88,11 @@ run_static_tests() {
     echo ""
     echo "--- Configuration Files ---"
     check "RT_SiteConfig.pm exists" \
-        run_in test -f /opt/rt4/etc/RT_SiteConfig.pm
+        run_in test -f /opt/rt6/etc/RT_SiteConfig.pm
     check "RT Apache config exists" \
         run_in test -f /etc/httpd/conf.d/rt.conf
-    check "RT_SiteConfig sets database type to mysql" \
-        'run_in grep -q "mysql" /opt/rt4/etc/RT_SiteConfig.pm'
+    check "RT_SiteConfig sets database type to MariaDB" \
+        'run_in grep -q "MariaDB" /opt/rt6/etc/RT_SiteConfig.pm'
 
     echo ""
     echo "--- Init Scripts ---"
