@@ -7,6 +7,6 @@ Set( $DatabaseType, 'mysql' );
 Set( $DatabaseUser, 'root' );
 Set( $Organization, 'example.com' );
 Set( $WebDomain, 'localhost' );
-Set( $WebPort, '82' );
+Set( $WebPort, '80' );
 Set( $rtname, 'RT' );
 1;

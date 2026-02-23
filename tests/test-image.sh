@@ -82,8 +82,6 @@ run_static_tests() {
         run_in rpm -q mariadb-server
     check "postfix is installed" \
         run_in rpm -q postfix
-    check "w3m is installed" \
-        run_in rpm -q w3m
     check "perl is installed" \
         run_in rpm -q perl
 
@@ -135,10 +133,8 @@ run_static_tests() {
 
     echo ""
     echo "--- Apache Config ---"
-    check "Apache listens on port 82" \
-        'run_in grep -q "Listen 82" /etc/httpd/conf.d/rt.conf'
-    check "Apache port 80 is disabled" \
-        'run_in grep -q "^#Listen 80" /etc/httpd/conf/httpd.conf'
+    check "RT VirtualHost uses port 80" \
+        'run_in grep -q "VirtualHost \*:80" /etc/httpd/conf.d/rt.conf'
     check "ScriptAlias points to RT FCGI" \
         'run_in grep -q "rt-server.fcgi" /etc/httpd/conf.d/rt.conf'
 
@@ -254,7 +250,7 @@ run_runtime_tests() {
     # Wait for httpd to serve pages (up to 30s)
     local web_ready=false
     for i in $(seq 1 30); do
-        if rexec curl -s -o /dev/null -w '%{http_code}' http://127.0.0.1:82/ 2>/dev/null | grep -qE "200|302"; then
+        if rexec curl -s -o /dev/null -w '%{http_code}' http://127.0.0.1:80/ 2>/dev/null | grep -qE "200|302"; then
             web_ready=true
             break
         fi
@@ -264,7 +260,7 @@ run_runtime_tests() {
     check "RT web UI responds (HTTP 200 or 302)" \
         '$web_ready'
     check "RT login page contains expected content" \
-        'rexec curl -sL http://127.0.0.1:82/ | grep -qi "RT"'
+        'rexec curl -sL http://127.0.0.1:80/ | grep -qi "RT"'
 
     echo ""
     echo "--- Postfix ---"

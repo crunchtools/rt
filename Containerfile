@@ -155,7 +155,7 @@ RUN cd /root/rt-6.0.2 && make testdeps && make install
 # =============================================================================
 FROM quay.io/crunchtools/ubi10-httpd-perl
 
-RUN dnf install -y postfix w3m && dnf clean all
+RUN dnf install -y postfix && dnf clean all
 RUN systemctl enable postfix
 
 # Copy RT from builder
@@ -171,9 +171,6 @@ RUN chown -R root:bin /opt/rt6/lib && chown -R root:apache /opt/rt6/etc
 # RT 6.0.2 ships schema.mysql/acl.mysql but DatabaseType MariaDB looks for schema.MariaDB/acl.MariaDB
 RUN ln -sf /opt/rt6/etc/schema.mysql /opt/rt6/etc/schema.MariaDB && \
     ln -sf /opt/rt6/etc/acl.mysql /opt/rt6/etc/acl.MariaDB
-
-# Disable default port 80 — RT uses port 82 exclusively
-RUN sed -i 's/^Listen 80$/#Listen 80/' /etc/httpd/conf/httpd.conf
 
 # Copy init scripts, systemd units, and config files
 COPY rootfs/ /
