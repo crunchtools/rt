@@ -8,8 +8,7 @@ RUN --mount=type=secret,id=activation_key \
     if [ -s /run/secrets/activation_key ] && [ -s /run/secrets/org_id ]; then \
         subscription-manager register \
             --activationkey="$(cat /run/secrets/activation_key)" \
-            --org="$(cat /run/secrets/org_id)" && \
-        subscription-manager attach --auto; \
+            --org="$(cat /run/secrets/org_id)"; \
     fi
 
 RUN dnf install -y \
