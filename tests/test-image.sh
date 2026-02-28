@@ -82,6 +82,8 @@ run_static_tests() {
         run_in rpm -q mariadb-server
     check "postfix is installed" \
         run_in rpm -q postfix
+    check "mail command wrapper exists" \
+        run_in test -x /usr/local/bin/mail
     check "perl is installed" \
         run_in rpm -q perl
 
@@ -266,6 +268,14 @@ run_runtime_tests() {
     echo "--- Postfix ---"
     check "postfix.service is active" \
         'rexec systemctl is-active postfix.service'
+    check "postfix alias_maps uses lmdb (not hash)" \
+        'rexec postconf alias_maps | grep -q lmdb'
+    check "postfix alias_database uses lmdb (not hash)" \
+        'rexec postconf alias_database | grep -q lmdb'
+    check "lmdb aliases database exists" \
+        'rexec test -f /etc/aliases.lmdb'
+    check "mail command is available" \
+        'rexec which mail'
 
     # Cleanup
     $RUNTIME rm -f "$CONTAINER_NAME" >/dev/null 2>&1 || true

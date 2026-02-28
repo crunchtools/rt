@@ -155,7 +155,7 @@ RUN cd /root/rt-6.0.2 && make testdeps && make install
 # =============================================================================
 FROM quay.io/crunchtools/ubi10-httpd-perl
 
-RUN dnf install -y postfix s-nail && dnf clean all
+RUN dnf install -y postfix && dnf clean all
 # RHEL 10 dropped Berkeley DB hash maps; use lmdb instead
 RUN postconf -e "alias_maps = lmdb:/etc/aliases" \
               "alias_database = lmdb:/etc/aliases" && \
@@ -180,7 +180,7 @@ RUN ln -sf /opt/rt6/etc/schema.mysql /opt/rt6/etc/schema.MariaDB && \
 COPY rootfs/ /
 
 # Enable init services
-RUN chmod +x /usr/local/bin/rt-db-prep.sh /usr/local/bin/rt-db-setup.sh && \
+RUN chmod +x /usr/local/bin/rt-db-prep.sh /usr/local/bin/rt-db-setup.sh /usr/local/bin/mail && \
     systemctl enable rt-db-prep rt-db-setup
 
 ENTRYPOINT ["/sbin/init"]

@@ -1,0 +1,20 @@
+#!/bin/bash
+# Minimal mail(1) replacement using sendmail (provided by postfix)
+# Supports: mail -s "subject" recipient < body
+#           echo "body" | mail -s "subject" recipient
+
+SUBJECT=""
+while getopts "s:" opt; do
+    case "$opt" in
+        s) SUBJECT="$OPTARG" ;;
+    esac
+done
+shift $((OPTIND - 1))
+RECIPIENT="$1"
+
+{
+    echo "To: $RECIPIENT"
+    echo "Subject: $SUBJECT"
+    echo ""
+    cat
+} | /usr/sbin/sendmail -t
