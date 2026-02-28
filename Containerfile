@@ -155,7 +155,7 @@ RUN cd /root/rt-6.0.2 && make testdeps && make install
 # =============================================================================
 FROM quay.io/crunchtools/ubi10-httpd-perl
 
-RUN dnf install -y postfix && dnf clean all
+RUN dnf install -y postfix postfix-hash && dnf clean all
 RUN systemctl enable postfix
 
 # Copy RT from builder
