@@ -153,7 +153,7 @@ RUN cd /root/rt-6.0.2 && make testdeps && make install
 # =============================================================================
 # Stage 2: Deploy (lean runtime image)
 # =============================================================================
-FROM quay.io/crunchtools/ubi10-httpd-perl
+FROM quay.io/crunchtools/ubi10-httpd-perl-mariadb
 
 RUN dnf install -y postfix && dnf clean all
 # RHEL 10 dropped Berkeley DB hash maps; use lmdb instead
