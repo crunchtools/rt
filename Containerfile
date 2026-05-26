@@ -150,6 +150,16 @@ RUN curl -fsSL https://download.bestpractical.com/pub/rt/release/rt-6.0.2.tar.gz
 RUN cd /root/rt-6.0.2 && ./configure --with-db-type=mysql
 RUN cd /root/rt-6.0.2 && make testdeps && make install
 
+# Patch RT::Squish::JS to work on raw bytes instead of decoded (wide) strings.
+# RT 6.0.2's JS squish concatenates $res->decoded_content, which returns a wide
+# Perl string for JS files containing UTF-8 (util.js, autocomplete.js, d3.min.js,
+# ...). That wide string reaches md5_hex in RT::Squish (Squish.pm:85), which only
+# accepts bytes, so every page dies with "Wide character in subroutine entry"
+# whenever the squish cache is cold (e.g. after a restart). CSS.pm already works
+# on bytes; this makes the JS path match. Assert the bug pattern is gone.
+RUN sed -i 's/\$res->decoded_content/\$res->content/g' /opt/rt6/lib/RT/Squish/JS.pm && \
+    ! grep -q 'decoded_content' /opt/rt6/lib/RT/Squish/JS.pm
+
 # =============================================================================
 # Stage 2: Deploy (lean runtime image)
 # =============================================================================
