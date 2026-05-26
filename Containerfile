@@ -30,7 +30,7 @@ RUN ln -sf /usr/bin/mariadb_config /usr/bin/mysql_config
 # Install cpanm for reliable automated CPAN installs
 RUN curl -fsSL https://cpanmin.us | perl - App::cpanminus
 
-# Install CPAN dependencies for RT 6.0.2 (split into layers for caching)
+# Install CPAN dependencies for RT 6.0.3 (split into layers for caching)
 # Layer 1: Core framework deps (Moose stack, DBI, DateTime)
 RUN cpanm --notest \
     Moose \
@@ -145,20 +145,14 @@ RUN cpanm --notest \
     URI \
     XML::RSS
 
-# Download and install RT 6.0.2
-RUN curl -fsSL https://download.bestpractical.com/pub/rt/release/rt-6.0.2.tar.gz | tar xz -C /root
-RUN cd /root/rt-6.0.2 && ./configure --with-db-type=mysql
-RUN cd /root/rt-6.0.2 && make testdeps && make install
-
-# Patch RT::Squish::JS to work on raw bytes instead of decoded (wide) strings.
-# RT 6.0.2's JS squish concatenates $res->decoded_content, which returns a wide
-# Perl string for JS files containing UTF-8 (util.js, autocomplete.js, d3.min.js,
-# ...). That wide string reaches md5_hex in RT::Squish (Squish.pm:85), which only
-# accepts bytes, so every page dies with "Wide character in subroutine entry"
-# whenever the squish cache is cold (e.g. after a restart). CSS.pm already works
-# on bytes; this makes the JS path match. Assert the bug pattern is gone.
-RUN sed -i 's/\$res->decoded_content/\$res->content/g' /opt/rt6/lib/RT/Squish/JS.pm && \
-    ! grep -q 'decoded_content' /opt/rt6/lib/RT/Squish/JS.pm
+# Download and install RT 6.0.3
+# 6.0.3 includes upstream commit f8f03dd (2026-04-30): "Use raw content for JS
+# squishing to avoid auto-decoding under Plack 1.0052" — the fix for the wide-
+# character md5_hex crash that took down 6.0.2 on a cold squish cache. The local
+# Squish/JS.pm sed patch we carried on 6.0.2 is no longer needed.
+RUN curl -fsSL https://download.bestpractical.com/pub/rt/release/rt-6.0.3.tar.gz | tar xz -C /root
+RUN cd /root/rt-6.0.3 && ./configure --with-db-type=mysql
+RUN cd /root/rt-6.0.3 && make testdeps && make install
 
 # =============================================================================
 # Stage 2: Deploy (lean runtime image)
@@ -182,7 +176,7 @@ COPY --from=builder /usr/local/lib64/perl5/ /usr/local/lib64/perl5/
 # Fix ownership
 RUN chown -R root:bin /opt/rt6/lib && chown -R root:apache /opt/rt6/etc
 
-# RT 6.0.2 ships schema.mysql/acl.mysql but DatabaseType MariaDB looks for schema.MariaDB/acl.MariaDB
+# RT 6.0.3 ships schema.mysql/acl.mysql but DatabaseType MariaDB looks for schema.MariaDB/acl.MariaDB
 RUN ln -sf /opt/rt6/etc/schema.mysql /opt/rt6/etc/schema.MariaDB && \
     ln -sf /opt/rt6/etc/acl.mysql /opt/rt6/etc/acl.MariaDB
 
