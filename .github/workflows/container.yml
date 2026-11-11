@@ -1,0 +1,34 @@
+name: Container
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+    tags: ["v*"]
+  schedule:
+    - cron: "17 5 * * 1"
+  repository_dispatch:
+    types: [parent-image-updated]
+  workflow_dispatch:
+
+permissions: {}
+
+jobs:
+  container:
+    uses: crunchtools/constitution/.github/workflows/container-release.yml@v1.39.1
+    permissions:
+      contents: read
+      pull-requests: read
+    with:
+      image: quay.io/crunchtools/rt
+      rhsm: true
+      # The repo's own suite: static checks on the image, then boot it under
+      # systemd and check MariaDB, the RT schema, Apache/RT web and Postfix.
+      boot: command
+      boot-command: ./tests/test-image.sh --all "$IMAGE"
+      boot-timeout: 900
+    secrets:
+      QUAY_USERNAME: ${{ secrets.QUAY_USERNAME }}
+      QUAY_PASSWORD: ${{ secrets.QUAY_PASSWORD }}
+      RHSM_ACTIVATION_KEY: ${{ secrets.RHSM_ACTIVATION_KEY }}
+      RHSM_ORG_ID: ${{ secrets.RHSM_ORG_ID }}

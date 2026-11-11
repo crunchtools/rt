@@ -1,5 +1,5 @@
 #!/bin/bash
-# Test suite for RT 6.0.2 all-in-one container image
+# Test suite for RT 6.0.3 all-in-one container image
 # Usage: ./tests/test-image.sh [--static|--runtime|--all] <image:tag>
 set -euo pipefail
 
