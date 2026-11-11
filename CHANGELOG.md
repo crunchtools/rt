@@ -9,6 +9,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
+- Builds go through the constitution container-release workflow: one build per
+  change, the pushed digest is gated by `tests/test-image.sh --all`, and the
+  merge promotes that digest to `:main` without a rebuild. `:latest` and the
+  version tags move only on a `v*` tag. GHCR is dropped; Quay.io is the only
+  registry. Moved to constitution v1.39.1.
+
 - Added `.specify/memory/constitution.md` as a v1.18.0 manifest: it holds
   only what is specific to this repo; fleet and profile rules apply by
   reference.

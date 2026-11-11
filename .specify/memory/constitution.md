@@ -3,7 +3,7 @@
 > **Version:** 1.0.0
 > **Ratified:** 2026-10-02
 > **Status:** Active
-> **Inherits:** [crunchtools/constitution](https://github.com/crunchtools/constitution) v1.31.0
+> **Inherits:** [crunchtools/constitution](https://github.com/crunchtools/constitution) v1.39.1
 > **Profile:** Container Image
 
 This file holds what is specific to the rt image. The fleet rules and the
@@ -14,7 +14,7 @@ this repo's files by `constitution.yml`. They are not restated here.
 
 All-in-one [Request Tracker](https://bestpractical.com/request-tracker) 6.0.3
 image: RT, Apache with `mod_fcgid`, MariaDB and Postfix under systemd in one
-container. Published to `quay.io/crunchtools/rt` and `ghcr.io/crunchtools/rt`.
+container. Published to `quay.io/crunchtools/rt`.
 
 ## Parent Images
 
