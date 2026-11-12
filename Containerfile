@@ -3,15 +3,19 @@
 # =============================================================================
 FROM quay.io/crunchtools/ubi10-httpd-perl AS builder
 
+# Register, install, and unregister in ONE layer with a trap so unregister+clean
+# run even if the install fails (constitution II). No RHSM consumer leaks as a
+# ghost host in console inventory.
 RUN --mount=type=secret,id=activation_key \
-    --mount=type=secret,id=org_id \
-    if [ -s /run/secrets/activation_key ] && [ -s /run/secrets/org_id ]; then \
-        subscription-manager register \
-            --activationkey="$(cat /run/secrets/activation_key)" \
-            --org="$(cat /run/secrets/org_id)"; \
-    fi
-
-RUN dnf install -y \
+    --mount=type=secret,id=org_id <<'EOF'
+set -euo pipefail
+if [ -s /run/secrets/activation_key ] && [ -s /run/secrets/org_id ]; then
+    subscription-manager register \
+        --activationkey="$(cat /run/secrets/activation_key)" \
+        --org="$(cat /run/secrets/org_id)"
+    trap 'subscription-manager unregister || true; subscription-manager clean || true' EXIT
+fi
+dnf install -y \
     expat-devel \
     gcc \
     make \
@@ -19,10 +23,9 @@ RUN dnf install -y \
     mariadb-connector-c-devel \
     perl-CPAN \
     perl-ExtUtils-MakeMaker \
-    gnupg2 \
-    && dnf clean all
-
-RUN subscription-manager unregister 2>/dev/null || true
+    gnupg2
+dnf clean all
+EOF
 
 # Create mysql_config symlink for DBD::mysql 4.x (mariadb-connector-c provides mariadb_config)
 RUN ln -sf /usr/bin/mariadb_config /usr/bin/mysql_config
