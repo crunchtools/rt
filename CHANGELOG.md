@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.0.4] - 2026-11-13
+
+### Security
+- Rebuilt on ubi10-httpd with mod_http2 2.0.29-5.el10_3.1 (CVE-2026-119618).
+
 ## [1.0.3] - 2026-11-11
 
 ### Changed
